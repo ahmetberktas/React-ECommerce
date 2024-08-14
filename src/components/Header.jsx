@@ -2,17 +2,23 @@ import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { ProductContext } from "../context/productContext";
+import { BasketContext } from "../context/basketContext";
 
 const Header = () => {
   const { setSelectedCategory } = useContext(ProductContext);
+  const { basket } = useContext(BasketContext);
   const [categories, setCategories] = useState([]);
+
   useEffect(() => {
     axios
       .get("https://fakestoreapi.com/products/categories")
       .then((res) => setCategories(res.data));
   }, []);
+
+  const totalProduct = basket.reduce((total,i) => total + i.amount,0)
+
   return (
-    <nav className="navbar navbar-expand-md navbar-dark sticky-top mb-5">
+    <nav className="navbar navbar-expand-md navbar-dark bg-dark sticky-top mb-5">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           Context Store
@@ -57,6 +63,7 @@ const Header = () => {
               <li className="nav-item">
                 <NavLink to="/checkout" className="nav-link">
                   Checkout
+                  <span className="badge bg-danger mx-1">{totalProduct}</span>
                 </NavLink>
               </li>
               <li className="nav-item dropdown">
